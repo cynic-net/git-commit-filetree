@@ -6,6 +6,7 @@ files and creates a commit of them appended to a given branch. It can
 also be run as a standalone script.
 
 Usage:
+
     git commit-filetree <branch> <path>
 
 The main purpose of this command is to allow you to commit builds made
