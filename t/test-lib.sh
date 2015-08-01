@@ -22,7 +22,7 @@ start_test() {
 
 end_test() {
     $ENCOUNTERED_FAILURE && echo -n 'not '
-    echo ok $CURRENT_TEST_NUMBER - "$CURRENT_TEST_NAME"
+    echo ok $CURRENT_TEST_NUMBER - "$CURRENT_TEST_NAME" $*
 }
 
 test_equal() {
