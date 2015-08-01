@@ -4,10 +4,10 @@ cd $(dirname $0)/..
 mkdir -p tmp
 PATH=$(cd $(dirname $0)/.. && /bin/pwd):$PATH
 
-GIT_AUTHOR_EMAIL=author@example.com
-GIT_AUTHOR_NAME='The Author'
-GIT_COMMITTER_EMAIL=committer@example.com
-GIT_COMMITTER_NAME='The Committer'
+export GIT_AUTHOR_EMAIL=author@example.com
+export GIT_AUTHOR_NAME='The Author'
+export GIT_COMMITTER_EMAIL=committer@example.com
+export GIT_COMMITTER_NAME='The Committer'
 
 #----------------------------------------------------------------------
 

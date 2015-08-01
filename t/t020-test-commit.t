@@ -60,15 +60,15 @@ start_test 'Check commit'
 
 make_test_repo
 $git branch $branch
-test_equal "d065ff0 (HEAD, $branch, master) commit 1" \
+test_equal "23fc443 (HEAD, $branch, master) commit 1" \
             "$($git log --pretty=oneline --color=never)"
 
 echo bar > $files/one
 echo bar > $files/subdir/two
 $git commit-filetree $branch $files
 
-test_equal "e55765f ($branch) Build from source commit d065ff0.
-d065ff0 (HEAD, master) commit 1" \
+test_equal "065febb ($branch) Build from source commit 23fc443.
+23fc443 (HEAD, master) commit 1" \
             "$($git log --pretty=oneline --color=never $branch)"
 
 end_test
@@ -84,8 +84,8 @@ echo bar > $files/one
 echo bar > $files/subdir/two
 $git commit-filetree refs/heads/$branch $files
 
-test_equal "e55765f ($branch) Build from source commit d065ff0.
-d065ff0 (HEAD, master) commit 1" \
+test_equal "065febb ($branch) Build from source commit 23fc443.
+23fc443 (HEAD, master) commit 1" \
             "$($git log --pretty=oneline --color=never $branch)"
 
 end_test
@@ -101,8 +101,8 @@ echo bar > $files/one
 echo bar > $files/subdir/two
 (cd $repo && ../../../git-commit-filetree $branch ../files)
 
-test_equal "e55765f ($branch) Build from source commit d065ff0.
-d065ff0 (HEAD, master) commit 1" \
+test_equal "065febb ($branch) Build from source commit 23fc443.
+23fc443 (HEAD, master) commit 1" \
             "$($git log --pretty=oneline --color=never $branch)"
 
 end_test
@@ -117,8 +117,8 @@ echo bar > $files/subdir/two
 $git commit-filetree $branch $files
 $git commit-filetree $branch $files
 $git commit-filetree $branch $files
-test_equal "e55765f ($branch) Build from source commit d065ff0.
-d065ff0 (HEAD, master) commit 1" \
+test_equal "065febb ($branch) Build from source commit 23fc443.
+23fc443 (HEAD, master) commit 1" \
             "$($git log --pretty=oneline --color=never $branch)"
 
 end_test
