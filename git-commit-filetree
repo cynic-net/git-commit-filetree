@@ -7,4 +7,12 @@ usage="Usage: git commit-filetree <branch> <path>"
     exit 129
 }
 
+err() { echo "$@"; exit 1; }
+
+# Check that we have no uncommited or unknown files.
+git diff-index --quiet HEAD \
+    || err "Cannot commit with uncommited files in working copy."
+[ -z "$(git ls-files --exclude-standard --others)" ] \
+    || err "Cannot commit with untracked files in working copy."
+
 exit 0
