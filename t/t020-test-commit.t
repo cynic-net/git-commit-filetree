@@ -2,7 +2,7 @@
 . t/test-lib.sh
 set -e
 
-echo "1..5"
+echo "1..6"
 
 branch=testbr
 repo=tmp/test/repo
@@ -74,6 +74,23 @@ d065ff0 (HEAD, master) commit 1" \
 end_test '# TODO finish writing commit-filetree'
 
 ##### 5
+
+start_test 'Check commit when script is run standalone'
+
+make_test_repo
+$git branch $branch
+
+echo bar > $files/one
+echo bar > $files/subdir/two
+(cd $repo && ../../../git-commit-filetree $branch ../files)
+
+test_equal "xxxxxxx ($branch) commit 2
+d065ff0 (HEAD, master) commit 1" \
+            "$($git log --pretty=oneline --color=never) $branch"
+
+end_test '# TODO finish writing commit-filetree'
+
+##### 6
 
 start_test 'Check we do not commit if it would be an empty commit.'
 make_test_repo
