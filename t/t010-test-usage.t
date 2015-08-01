@@ -1,7 +1,5 @@
 #/bin/bash
-
 . t/test-lib.sh
-
 echo "1..3"
 
 ##### 1
