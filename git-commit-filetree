@@ -1,8 +1,10 @@
 #!/bin/bash
 set -e
 
+index_file=$(mktemp)
+
 internal_error=true
-trap '$internal_error && err "INTERNAL ERROR. FAILED!"' 0
+trap 'rm -f $index_file; $internal_error && err "INTERNAL ERROR. FAILED!"' 0
 
 usage="Usage: git commit-filetree <branch> <path>"
 [ -z "$2" ] && {
@@ -10,8 +12,9 @@ usage="Usage: git commit-filetree <branch> <path>"
     internal_error=false
     exit 129
 }
+branch=refs/heads/$(echo $1 | sed -e 's,^refs/heads/,,')
 
-err() { internal_error=false; echo "$@"; exit 1; }
+err() { internal_error=false; echo 1>&2 "$@"; exit 1; }
 
 # Check that we have no uncommited or unknown files.
 git diff-index --quiet HEAD \
@@ -19,5 +22,25 @@ git diff-index --quiet HEAD \
 [ -z "$(git ls-files --exclude-standard --others)" ] \
     || err "Cannot commit with untracked files in working copy."
 
+git show-ref -q --verify $branch || {
+    internal_error=false
+    echo 1>&2 "Invalid ref: $branch"
+    exit 128
+}
+
+source_sha=$(git show --quiet --pretty='format:%h')
+
+export GIT_INDEX_FILE=$index_file
+git read-tree --empty
+git --work-tree=$2 add -A
+tree_sha=$(git write-tree)
+# XXX Check to see if we're an empty commit (i.e., this tree is the same tree
+# used by the commit at $branch_ref) and exit here (with no error) if so.
+
+commit_msg="Build from source commit $source_sha."
+commit_sha=$(echo "$commit_msg" | git commit-tree $tree_sha -p $branch)
+# XXX use -m below to update the log file as well
+# (See /usr/share/doc/git/contrib/examples/git-commit.sh for an example.)
+git update-ref $branch $commit_sha
+
 internal_error=false
-exit 0

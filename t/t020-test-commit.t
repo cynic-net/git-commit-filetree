@@ -2,7 +2,7 @@
 . t/test-lib.sh
 set -e
 
-echo "1..6"
+echo "1..7"
 
 branch=testbr
 repo=tmp/test/repo
@@ -26,10 +26,10 @@ make_test_repo() {
 
 start_test 'Check we fail when branch does not exist'
 make_test_repo
-test_equal 'fatal: invalid reference: $branch
-128' \
-    $($git commit-filetree $branch $files; echo $?)
-end_test '# TODO finish writing commit-filetree'
+test_equal "Invalid ref: refs/heads/testbr
+128" \
+    "$($git commit-filetree 2>&1 $branch $files; echo $?)"
+end_test
 
 ##### 2
 
@@ -39,7 +39,7 @@ $git branch $branch
 touch $repo/untracked
 test_equal 'Cannot commit with untracked files in working copy.
 1' \
-    "$($git commit-filetree $branch $files; echo $?)"
+    "$($git commit-filetree 2>&1 $branch $files; echo $?)"
 end_test
 
 ##### 3
@@ -51,7 +51,7 @@ touch $repo/three
 $git add three
 test_equal 'Cannot commit with uncommited files in working copy.
 1' \
-    "$($git commit-filetree $branch $files; echo $?)"
+    "$($git commit-filetree 2>&1 $branch $files; echo $?)"
 end_test
 
 ##### 4
@@ -67,13 +67,30 @@ echo bar > $files/one
 echo bar > $files/subdir/two
 $git commit-filetree $branch $files
 
-test_equal "xxxxxxx ($branch) commit 2
+test_equal "e55765f ($branch) Build from source commit d065ff0.
 d065ff0 (HEAD, master) commit 1" \
-            "$($git log --pretty=oneline --color=never) $branch"
+            "$($git log --pretty=oneline --color=never $branch)"
 
-end_test '# TODO finish writing commit-filetree'
+end_test
 
 ##### 5
+
+start_test 'Check commit with refs/heads/branchname'
+
+make_test_repo
+$git branch $branch
+
+echo bar > $files/one
+echo bar > $files/subdir/two
+$git commit-filetree refs/heads/$branch $files
+
+test_equal "e55765f ($branch) Build from source commit d065ff0.
+d065ff0 (HEAD, master) commit 1" \
+            "$($git log --pretty=oneline --color=never $branch)"
+
+end_test
+
+##### 6
 
 start_test 'Check commit when script is run standalone'
 
@@ -84,21 +101,21 @@ echo bar > $files/one
 echo bar > $files/subdir/two
 (cd $repo && ../../../git-commit-filetree $branch ../files)
 
-test_equal "xxxxxxx ($branch) commit 2
+test_equal "e55765f ($branch) Build from source commit d065ff0.
 d065ff0 (HEAD, master) commit 1" \
-            "$($git log --pretty=oneline --color=never) $branch"
+            "$($git log --pretty=oneline --color=never $branch)"
 
-end_test '# TODO finish writing commit-filetree'
+end_test
 
-##### 6
+##### 7
 
 start_test 'Check we do not commit if it would be an empty commit.'
 make_test_repo
 $git branch $branch
 $git commit-filetree $branch $files
 $git commit-filetree $branch $files
-test_equal "xxxxxxx ($branch) commit 2
+test_equal "e55765f ($branch) Build from source commit d065ff0.
 d065ff0 (HEAD, master) commit 1" \
-            "$($git log --pretty=oneline --color=never) $branch"
+            "$($git log --pretty=oneline --color=never $branch)"
 
 end_test '# TODO finish writing commit-filetree'
