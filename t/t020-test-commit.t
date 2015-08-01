@@ -24,6 +24,18 @@ make_test_repo() {
 
 ##### 1
 
+start_test 'Check we fail when unknown files are in the working copy.'
+fail_test
+end_test '# TODO finish writing commit-filetree'
+
+##### 2
+
+start_test 'Check we fail when working copy is dirty'
+fail_test
+end_test '# TODO finish writing commit-filetree'
+
+##### 3
+
 start_test 'Check commit'
 
 make_test_repo
@@ -40,18 +52,6 @@ test_equal "d065ff0 (HEAD, master) commit 1" \
 test_equal "xxxxxxx ($branch) commit 2" \
             "$($git log --pretty=oneline --color=never) $branch"
 
-end_test '# TODO finish writing commit-filetree'
-
-##### 2
-
-start_test 'Check we fail when unknown files are in the working copy.'
-fail_test
-end_test '# TODO finish writing commit-filetree'
-
-##### 3
-
-start_test 'Check we fail when working copy is dirty'
-fail_test
 end_test '# TODO finish writing commit-filetree'
 
 ##### 4
