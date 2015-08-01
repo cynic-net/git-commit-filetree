@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd $(dirname $0)/..
+mkdir -p tmp
 PATH=$(cd $(dirname $0)/.. && /bin/pwd):$PATH
 
 GIT_AUTHOR_EMAIL=author@example.com
