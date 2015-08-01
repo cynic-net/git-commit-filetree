@@ -2,7 +2,7 @@
 . t/test-lib.sh
 set -e
 
-echo "1..1"
+echo "1..4"
 
 branch=testbr
 repo=tmp/test/repo
@@ -40,4 +40,22 @@ test_equal "d065ff0 (HEAD, master) commit 1" \
 test_equal "xxxxxxx ($branch) commit 2" \
             "$($git log --pretty=oneline --color=never) $branch"
 
+end_test '# TODO finish writing commit-filetree'
+
+##### 2
+
+start_test 'Check we fail when unknown files are in the working copy.'
+fail_test
+end_test '# TODO finish writing commit-filetree'
+
+##### 3
+
+start_test 'Check we fail when working copy is dirty'
+fail_test
+end_test '# TODO finish writing commit-filetree'
+
+##### 4
+
+start_test 'Check we do not commit if it would be an empty commit.'
+fail_test
 end_test '# TODO finish writing commit-filetree'

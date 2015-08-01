@@ -25,6 +25,10 @@ end_test() {
     echo ok $CURRENT_TEST_NUMBER - "$CURRENT_TEST_NAME" $*
 }
 
+fail_test() {
+    ENCOUNTERED_FAILURE=true
+}
+
 test_equal() {
     local expected="$1" actual="$2"
     local not=''
@@ -36,7 +40,7 @@ test_equal() {
     }
 
     [ "$expected" == "$actual" ] || {
-        ENCOUNTERED_FAILURE=true
+        fail_test
         echo "# Expected: '$expected'"
         echo "#   Actual: '$actual'"
     }
