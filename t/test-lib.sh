@@ -14,17 +14,15 @@ GIT_COMMITTER_NAME='The Committer'
 CURRENT_TEST_NUMBER=0
 CURRENT_TEST_NAME=
 
-test_name() {
+start_test() {
     CURRENT_TEST_NUMBER=$(expr $CURRENT_TEST_NUMBER + 1)
     CURRENT_TEST_NAME="$*"
+    ENCOUNTERED_FAILURE=false
 }
 
-test_pass() {
+end_test() {
+    $ENCOUNTERED_FAILURE && echo -n 'not '
     echo ok $CURRENT_TEST_NUMBER - "$CURRENT_TEST_NAME"
-}
-
-test_fail() {
-    echo not ok $CURRENT_TEST_NUMBER - "$CURRENT_TEST_NAME"
 }
 
 test_equal() {
@@ -37,10 +35,10 @@ test_equal() {
         return
     }
 
-    [ "$expected" == "$actual" ] || not=not
-    echo $not ok $CURRENT_TEST_NUMBER - "$CURRENT_TEST_NAME"
-    [ -n "$not" ] && {
+    [ "$expected" == "$actual" ] || {
+        ENCOUNTERED_FAILURE=true
         echo "# Expected: '$expected'"
         echo "#   Actual: '$actual'"
     }
+    return 0
 }
