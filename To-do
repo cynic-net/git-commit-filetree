@@ -1,0 +1,5 @@
+To-do List
+----------
+
+* Refactor the err() function to take an exit code.
+* Write a manual page
