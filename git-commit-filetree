@@ -34,11 +34,14 @@ export GIT_INDEX_FILE=$index_file
 git read-tree --empty
 git --work-tree=$2 add -A
 tree_sha=$(git write-tree)
-# XXX Check to see if we're an empty commit (i.e., this tree is the same tree
-# used by the commit at $branch_ref) and exit here (with no error) if so.
+parent_tree_sha=$(git log -1 $branch --format='%T')
+[ "$tree_sha" = "$parent_tree_sha" ] && { internal_error=false; exit 0; }
 
 commit_msg="Build from source commit $source_sha."
 commit_sha=$(echo "$commit_msg" | git commit-tree $tree_sha -p $branch)
+
+
+
 # XXX use -m below to update the log file as well
 # (See /usr/share/doc/git/contrib/examples/git-commit.sh for an example.)
 git update-ref $branch $commit_sha

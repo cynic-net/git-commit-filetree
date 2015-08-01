@@ -112,10 +112,13 @@ end_test
 start_test 'Check we do not commit if it would be an empty commit.'
 make_test_repo
 $git branch $branch
+echo bar > $files/one
+echo bar > $files/subdir/two
+$git commit-filetree $branch $files
 $git commit-filetree $branch $files
 $git commit-filetree $branch $files
 test_equal "e55765f ($branch) Build from source commit d065ff0.
 d065ff0 (HEAD, master) commit 1" \
             "$($git log --pretty=oneline --color=never $branch)"
 
-end_test '# TODO finish writing commit-filetree'
+end_test
