@@ -11,6 +11,7 @@ export GIT_AUTHOR_DATE=2000-01-01T00:00:00
 export GIT_COMMITTER_DATE=2001-01-01T00:00:00
 
 git="git --git-dir=$repo/.git --work-tree=$repo"
+gitlog="$git log --pretty=oneline --color=never"
 
 make_test_repo() {
     rm -rf tmp/test
@@ -61,7 +62,7 @@ start_test 'Check commit'
 make_test_repo
 $git branch $branch
 test_equal "737b0f4 (HEAD, $branch, master) commit 1" \
-            "$($git log --pretty=oneline --color=never)"
+            "$($gitlog)"
 
 echo bar > $files/one
 echo bar > $files/subdir/two
@@ -69,7 +70,7 @@ $git commit-filetree $branch $files
 
 test_equal "003e598 ($branch) Build from source commit 737b0f4.
 737b0f4 (HEAD, master) commit 1" \
-            "$($git log --pretty=oneline --color=never $branch)"
+            "$($gitlog $branch)"
 
 end_test
 
@@ -86,7 +87,7 @@ $git commit-filetree refs/heads/$branch $files
 
 test_equal "003e598 ($branch) Build from source commit 737b0f4.
 737b0f4 (HEAD, master) commit 1" \
-            "$($git log --pretty=oneline --color=never $branch)"
+            "$($gitlog $branch)"
 
 end_test
 
@@ -103,7 +104,7 @@ echo bar > $files/subdir/two
 
 test_equal "003e598 ($branch) Build from source commit 737b0f4.
 737b0f4 (HEAD, master) commit 1" \
-            "$($git log --pretty=oneline --color=never $branch)"
+            "$($gitlog $branch)"
 
 end_test
 
@@ -119,6 +120,6 @@ $git commit-filetree $branch $files
 $git commit-filetree $branch $files
 test_equal "003e598 ($branch) Build from source commit 737b0f4.
 737b0f4 (HEAD, master) commit 1" \
-            "$($git log --pretty=oneline --color=never $branch)"
+            "$($gitlog $branch)"
 
 end_test
