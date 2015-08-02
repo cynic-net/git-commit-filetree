@@ -1,7 +1,0 @@
-To-do List
-----------
-
-* Refactor the err() function to take an exit code.
-* Update the reflog after doing the commit.
-* Add the ability to specify a commit message.
-* Write a manual page

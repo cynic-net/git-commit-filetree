@@ -21,3 +21,13 @@ to commit the new version of the site to the `gh-pages` branch. Then a
 `git push --all` will upload both the updated source and updated build
 and github.io will start serving the new version of the site on the
 `gh-pages` branch.
+
+Missing Features
+----------------
+
+The following features are still missing from this version of the
+program.
+
+* Update the reflog after doing the commit.
+* Add the ability to specify a commit message.
+* A manual page
