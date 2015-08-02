@@ -2,35 +2,32 @@
 set -e
 
 index_file=$(mktemp)
-
 internal_error=true
-trap 'rm -f $index_file; $internal_error && err "INTERNAL ERROR. FAILED!"' 0
+trap 'rm -f $index_file; $internal_error && err 255 "INTERNAL ERROR. FAILED!"' 0
 
-usage="Usage: git commit-filetree <branch> <path>"
-[ -z "$2" ] && {
-    echo 1>&2 "$usage"
+err() {
+    local exitcode="$1"; shift
     internal_error=false
-    exit 129
+    echo 1>&2 "$@"
+    exit $exitcode
 }
-branch=refs/heads/$(echo $1 | sed -e 's,^refs/heads/,,')
 
-err() { internal_error=false; echo 1>&2 "$@"; exit 1; }
+[ -z "$2" ] && err 129 "Usage: git commit-filetree <branch> <path>"
 
 # Check that we have no uncommited or unknown files.
 git diff-index --quiet HEAD \
-    || err "Cannot commit with uncommited files in working copy."
+    || err  1 "Cannot commit with uncommited files in working copy."
 [ -z "$(git ls-files --exclude-standard --others)" ] \
-    || err "Cannot commit with untracked files in working copy."
+    || err  1 "Cannot commit with untracked files in working copy."
 
-git show-ref -q --verify $branch || {
-    internal_error=false
-    echo 1>&2 "Invalid ref: $branch"
-    exit 128
-}
+branch=refs/heads/$(echo $1 | sed -e 's,^refs/heads/,,')
+git show-ref -q --verify $branch || err 128 "Invalid ref: $branch"
 
 source_sha=$(git show --quiet --pretty='format:%h')
 
+# Switch to an index separate from repo working copy.
 export GIT_INDEX_FILE=$index_file
+
 git read-tree --empty
 git --work-tree=$2 add -A
 tree_sha=$(git write-tree)
@@ -39,8 +36,6 @@ parent_tree_sha=$(git log -1 $branch --format='%T')
 
 commit_msg="Build from source commit $source_sha."
 commit_sha=$(echo "$commit_msg" | git commit-tree $tree_sha -p $branch)
-
-
 
 # XXX use -m below to update the log file as well
 # (See /usr/share/doc/git/contrib/examples/git-commit.sh for an example.)
