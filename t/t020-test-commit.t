@@ -2,7 +2,7 @@
 . t/test-lib.sh
 set -e
 
-echo "1..8"
+echo "1..9"
 
 branch=testbr
 repo=tmp/test/repo
@@ -134,5 +134,18 @@ $git commit-filetree $branch $files
 $git commit-filetree $branch $files
 test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
             "$($git_show_refs $branch)"
+end_test
 
+##### 9
+
+start_test 'Check reflog update'
+make_test_repo
+$git branch $branch
+echo bar > $files/one
+echo bar > $files/subdir/two
+$git commit-filetree $branch $files
+test_equal \
+    '003e598 testbr@{0}: commit-filetree: Build from source commit 737b0f4.
+737b0f4 testbr@{1}: branch: Created from master' \
+    "$($git reflog $branch)"
 end_test

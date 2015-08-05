@@ -48,8 +48,7 @@ parent_tree_sha=$(git log -1 $branch --format='%T')
 commit_msg="Build from source commit $source_sha."
 commit_sha=$(echo "$commit_msg" | git commit-tree $tree_sha -p $branch)
 
-# XXX use -m below to update the log file as well
-# (See /usr/share/doc/git/contrib/examples/git-commit.sh for an example.)
-git update-ref $branch $commit_sha
+git update-ref $branch $commit_sha \
+    -m "commit-filetree: $commit_msg"
 
 internal_error=false
