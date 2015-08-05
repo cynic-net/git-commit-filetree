@@ -2,7 +2,7 @@
 . t/test-lib.sh
 set -e
 
-echo "1..7"
+echo "1..8"
 
 branch=testbr
 repo=tmp/test/repo
@@ -11,7 +11,7 @@ export GIT_AUTHOR_DATE=2000-01-01T00:00:00
 export GIT_COMMITTER_DATE=2001-01-01T00:00:00
 
 git="git --git-dir=$repo/.git --work-tree=$repo"
-gitlog="$git log --color=never --format=%h%d_%s"
+git_show_refs="$git show-ref"
 
 make_test_repo() {
     rm -rf tmp/test
@@ -57,24 +57,40 @@ end_test
 
 ##### 4
 
+start_test 'Check commit message'
+
+make_test_repo
+$git branch $branch
+echo bar > $files/one
+echo bar > $files/subdir/two
+$git commit-filetree $branch $files
+
+test_equal 'Build from source commit 737b0f4.' \
+    "$($git log -1 --color=never --format=%B $branch)"
+
+end_test
+
+
+##### 5
+
 start_test 'Check commit'
 
 make_test_repo
 $git branch $branch
-test_equal "737b0f4 (HEAD, $branch, master)_commit 1" \
-            "$($gitlog)"
+test_equal "737b0f4390513917f3a19eece0dcd6a04e5deca3 refs/heads/master
+737b0f4390513917f3a19eece0dcd6a04e5deca3 refs/heads/testbr" \
+            "$($git_show_refs)"
 
 echo bar > $files/one
 echo bar > $files/subdir/two
 $git commit-filetree $branch $files
 
-test_equal "003e598 ($branch)_Build from source commit 737b0f4.
-737b0f4 (HEAD, master)_commit 1" \
-            "$($gitlog $branch)"
+test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
+            "$($git_show_refs $branch)"
 
 end_test
 
-##### 5
+##### 6
 
 start_test 'Check commit with refs/heads/branchname'
 
@@ -85,13 +101,12 @@ echo bar > $files/one
 echo bar > $files/subdir/two
 $git commit-filetree refs/heads/$branch $files
 
-test_equal "003e598 ($branch)_Build from source commit 737b0f4.
-737b0f4 (HEAD, master)_commit 1" \
-            "$($gitlog $branch)"
+test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
+            "$($git_show_refs $branch)"
 
 end_test
 
-##### 6
+##### 7
 
 start_test 'Check commit when script is run standalone'
 
@@ -102,13 +117,12 @@ echo bar > $files/one
 echo bar > $files/subdir/two
 (cd $repo && ../../../git-commit-filetree $branch ../files)
 
-test_equal "003e598 ($branch)_Build from source commit 737b0f4.
-737b0f4 (HEAD, master)_commit 1" \
-            "$($gitlog $branch)"
+test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
+            "$($git_show_refs $branch)"
 
 end_test
 
-##### 7
+##### 8
 
 start_test 'Check we do not commit if it would be an empty commit.'
 make_test_repo
@@ -118,8 +132,7 @@ echo bar > $files/subdir/two
 $git commit-filetree $branch $files
 $git commit-filetree $branch $files
 $git commit-filetree $branch $files
-test_equal "003e598 ($branch)_Build from source commit 737b0f4.
-737b0f4 (HEAD, master)_commit 1" \
-            "$($gitlog $branch)"
+test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
+            "$($git_show_refs $branch)"
 
 end_test
