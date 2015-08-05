@@ -100,3 +100,52 @@ of git use.)
 
 cjs wrote the test framework and tests, and the `git-commit-filetree`
 command framework (error handling, usage messages, etc.).
+
+Copying and Usage
+-----------------
+
+<p>
+![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
+To the extent possible under law,
+<a rel="dct:publisher"
+    href="https://github.com/cjs-cynic-net/git-commit-filetree">
+    <span property="dct:title">Curt J. Sampson and Nishant Rodreguez</span></a>
+have waived all copyright and related or neighboring rights to
+<span property="dct:title">git-commit-filetree</span>.
+This work is published from:
+<span property="vcard:Country" datatype="dct:ISO3166"
+content="JP" about="https://github.com/cjs-cynic-net/git-commit-filetree">
+Japan</span>.
+</p>
+
+### Attribution
+
+Though attribution is not required, we would appreciate it
+if, should you use this code in your own works, you name
+the authors and provide a link back to the [original source
+repository](https://github.com/cjs-cynic-net/git-commit-filetree).
+
+### Further Information
+
+See the `COPYING` file in this repository for complete information. To
+sumarize:
+
+The authors have with this deed has dedicated the work to the public
+domain by waiving all of their rights to the work worldwide under
+copyright law, including all related and neighboring rights, to the
+extent allowed by law.
+
+You can copy, modify, distribute and perform the work, even for
+commercial purposes, all without asking permission. However:
+
+* In no way are the patent or trademark rights of any person affected by
+  CC0, nor are the rights that other persons may have in the work or in
+  how the work is used, such as publicity or privacy rights.
+
+* We who associated our work with this deed make no warranties about
+  the work, and disclaim liability for all uses of the work, to the
+  fullest extent permitted by applicable law.
+
+* When using or citing the work, you should not imply endorsement by the
+  authors.
+

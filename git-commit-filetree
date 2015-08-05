@@ -1,4 +1,15 @@
 #!/bin/bash
+#
+#  git-commit-filetree - commit an arbitrary tree of files
+#                        to a branch in a git repository.
+#
+#  Authors:
+#    Curt J. Sampson <cjs@cynic.net>
+#    Nishant Rodrigues <nishantjr@gmail.com>
+#  Please find the latest version of this (with tests and copying rights) at:
+#    https://github.com/cjs-cynic-net/git-commit-filetree
+#
+
 set -e
 
 index_file=$(mktemp)
