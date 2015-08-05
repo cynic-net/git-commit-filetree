@@ -104,19 +104,17 @@ command framework (error handling, usage messages, etc.).
 Copying and Usage
 -----------------
 
-<p>
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 To the extent possible under law,
 <a rel="dct:publisher"
     href="https://github.com/cjs-cynic-net/git-commit-filetree">
-    <span property="dct:title">Curt J. Sampson and Nishant Rodreguez</span></a>
+    <span property="dct:title">Curt J. Sampson and Nishant Rodrigues</span></a>
 have waived all copyright and related or neighboring rights to
 <span property="dct:title">git-commit-filetree</span>.
 This work is published from:
 <span property="vcard:Country" datatype="dct:ISO3166"
 content="JP" about="https://github.com/cjs-cynic-net/git-commit-filetree">
 Japan</span>.
-</p>
 
 ### Attribution
 
