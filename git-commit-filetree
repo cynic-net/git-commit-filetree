@@ -3,6 +3,8 @@
 #  git-commit-filetree - commit an arbitrary tree of files
 #                        to a branch in a git repository.
 #
+#  Version:  cjsnjr.2015-08-08.0
+#
 #  Authors:
 #    Curt J. Sampson <cjs@cynic.net>
 #    Nishant Rodrigues <nishantjr@gmail.com>
