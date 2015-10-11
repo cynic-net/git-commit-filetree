@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+echo Building gem in $(dirname $0)/.build/
+cd $(dirname $0)
+
+rm -rf .build
+mkdir -p .build/lib .build/bin
+cp jekyll-release.rb .build/lib/
+cp ../../git-commit-filetree .build/bin/
+(cd .build && gem build ../jekyll-release.gemspec)
