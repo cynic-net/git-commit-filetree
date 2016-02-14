@@ -27,7 +27,13 @@ make_test_repo() {
 
 start_test 'Check we fail when branch does not exist'
 make_test_repo
-test_equal "Invalid ref: refs/heads/testbr
+test_equal "Branch '$branch' doesn't exist.
+Please create this branch and try again.
+
+To create a branch tracking an existing remote branch run:
+
+    git branch --track $branch <remote>/$branch
+
 128" \
     "$($git commit-filetree 2>&1 $branch $files; echo $?)"
 end_test
