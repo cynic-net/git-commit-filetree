@@ -33,13 +33,14 @@ git diff-index --quiet HEAD \
 [ -z "$(git ls-files --exclude-standard --others)" ] \
     || err  1 "Cannot commit with untracked files in working copy."
 
-branch=refs/heads/$(echo $1 | sed -e 's,^refs/heads/,,')
-git show-ref -q --verify $branch || err 128 "Branch '$1' doesn't exist.
+given_branch=$1
+branch=refs/heads/$(echo $given_branch | sed -e 's,^refs/heads/,,')
+git show-ref -q --verify $branch || err 128 "Branch '$given_branch' doesn't exist.
 Please create this branch and try again.
 
 To create a branch tracking an existing remote branch run:
 
-    git branch --track $1 <remote>/$1
+    git branch --track $given_branch <remote>/$given_branch
 "
 
 source_sha=$(git show --quiet --pretty='format:%h')
