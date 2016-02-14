@@ -25,7 +25,10 @@ err() {
     exit $exitcode
 }
 
-[ -z "$2" ] && err 129 "Usage: git commit-filetree <branch> <path>"
+branch="$1"; shift || true
+path="$1"; shift || true
+[ -z "$path" -o -n "$1" ] \
+    && err 129 "Usage: git commit-filetree <branch> <path>"
 
 # Check that we have no uncommited or unknown files.
 git diff-index --quiet HEAD \
@@ -33,7 +36,7 @@ git diff-index --quiet HEAD \
 [ -z "$(git ls-files --exclude-standard --others)" ] \
     || err  1 "Cannot commit with untracked files in working copy."
 
-ref=refs/heads/$(echo $1 | sed -e 's,^refs/heads/,,')
+ref=refs/heads/$(echo $branch | sed -e 's,^refs/heads/,,')
 git show-ref -q --verify $ref || err 128 "Invalid ref: $ref"
 
 source_sha=$(git show --quiet --pretty='format:%h')
@@ -42,7 +45,7 @@ source_sha=$(git show --quiet --pretty='format:%h')
 export GIT_INDEX_FILE=$index_file
 
 git read-tree --empty
-git --work-tree=$2 add -A
+git --work-tree="$path" add -A
 tree_sha=$(git write-tree)
 parent_tree_sha=$(git log -1 $ref --format='%T')
 [ "$tree_sha" = "$parent_tree_sha" ] && { internal_error=false; exit 0; }
