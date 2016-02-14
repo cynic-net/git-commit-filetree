@@ -33,8 +33,8 @@ git diff-index --quiet HEAD \
 [ -z "$(git ls-files --exclude-standard --others)" ] \
     || err  1 "Cannot commit with untracked files in working copy."
 
-branch=refs/heads/$(echo $1 | sed -e 's,^refs/heads/,,')
-git show-ref -q --verify $branch || err 128 "Invalid ref: $branch"
+ref=refs/heads/$(echo $1 | sed -e 's,^refs/heads/,,')
+git show-ref -q --verify $ref || err 128 "Invalid ref: $ref"
 
 source_sha=$(git show --quiet --pretty='format:%h')
 
@@ -44,13 +44,13 @@ export GIT_INDEX_FILE=$index_file
 git read-tree --empty
 git --work-tree=$2 add -A
 tree_sha=$(git write-tree)
-parent_tree_sha=$(git log -1 $branch --format='%T')
+parent_tree_sha=$(git log -1 $ref --format='%T')
 [ "$tree_sha" = "$parent_tree_sha" ] && { internal_error=false; exit 0; }
 
 commit_msg="Build from source commit $source_sha."
-commit_sha=$(echo "$commit_msg" | git commit-tree $tree_sha -p $branch)
+commit_sha=$(echo "$commit_msg" | git commit-tree $tree_sha -p $ref)
 
-git update-ref $branch $commit_sha \
+git update-ref $ref $commit_sha \
     -m "commit-filetree: $commit_msg"
 
 internal_error=false
