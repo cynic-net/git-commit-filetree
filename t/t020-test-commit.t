@@ -2,7 +2,7 @@
 . t/test-lib.sh
 set -e
 
-echo "1..9"
+echo "1..12"
 
 branch=testbr
 repo=tmp/test/repo
@@ -154,4 +154,69 @@ test_equal \
     '003e598 testbr@{0}: commit-filetree: Build from source commit 737b0f4.
 737b0f4 testbr@{1}: branch: Created from master' \
     "$($git reflog $branch)"
+end_test
+
+##### 10
+
+start_test 'Check fails if non-fastforward and not already up-to-date'
+make_test_repo
+echo foo > $repo/three
+$git add -A
+$git commit -q $date -m 'commit 2'
+$git remote add upstream $repo
+$git fetch -q upstream
+
+$git checkout -q -b $branch --track upstream/master
+$git reset -q --hard upstream/master^
+echo bar > $repo/three
+$git add -A
+$git commit -q $date -m "$branch: commit 2"
+
+$git checkout -q master
+echo bar > $files/one
+echo bar > $files/subdir/two
+
+test_equal 'Non fast-forward
+1' \
+    "$($git commit-filetree 2>&1 $branch $files; echo $?)"
+end_test
+
+##### 11
+
+start_test 'Check fastforwards'
+make_test_repo
+echo foo > $repo/three
+$git add -A
+$git commit -q $date -m 'commit 2'
+$git remote add upstream $repo
+$git fetch -q upstream
+
+$git branch -q $branch upstream/master^
+$git branch -q --set-upstream-to=upstream/master $branch
+
+echo bar > $files/one
+echo bar > $files/subdir/two
+
+$git commit-filetree $branch $files
+test_equal 'eac5796 Build from source commit c1a1ebc.
+c1a1ebc commit 2
+737b0f4 commit 1' \
+    "$($git log --color=never --oneline --format='%h %s' $branch)"
+end_test
+
+##### 12
+
+start_test 'Check we do not lose commit if branch already up-to-date'
+make_test_repo
+$git remote add upstream $repo
+$git fetch -q upstream
+$git branch -q $branch --track upstream/master
+echo bar > $files/one
+$git commit-filetree $branch $files
+echo bar > $files/subdir/two
+$git commit-filetree $branch $files
+test_equal '9ef3d24 Build from source commit 737b0f4.
+aa12f20 Build from source commit 737b0f4.
+737b0f4 commit 1' \
+    "$($git log --color=never --oneline --format='%h %s' $branch)"
 end_test

@@ -43,6 +43,20 @@ To create a branch tracking an existing remote branch run:
     git branch --track $given_branch <remote>/$given_branch
 "
 
+tracking=$(git rev-parse $given_branch@{u} 2>/dev/null || true)
+if [ ! -z "$tracking" ]; then
+    git merge-base --is-ancestor $tracking $branch ||
+        (git merge-base --is-ancestor $branch $tracking &&
+         git update-ref $branch $tracking -m "commit-filetree: fast-forward") ||
+         err 1 "Cannot fast-forward and not up-to-date.
+
+To discard local changes run:
+
+    XXX
+"
+
+fi
+
 source_sha=$(git show --quiet --pretty='format:%h')
 
 # Switch to an index separate from repo working copy.
