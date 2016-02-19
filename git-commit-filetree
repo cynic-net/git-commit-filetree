@@ -18,6 +18,9 @@ index_file=$(mktemp)
 internal_error=true
 trap 'rm -f $index_file; $internal_error && err 255 "INTERNAL ERROR. FAILED!"' 0
 
+SUBDIRECTORY_OK=1
+. "$(git --exec-path)/git-sh-setup"
+
 err() {
     local exitcode="$1"; shift
     internal_error=false
