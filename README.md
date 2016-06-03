@@ -121,7 +121,7 @@ Japan</span>.
 Though attribution is not required, we would appreciate it
 if, should you use this code in your own works, you name
 the authors and provide a link back to the [original source
-repository](https://github.com/cjs-cynic-net/git-commit-filetree).
+repository](https://github.com/cynic-net/git-commit-filetree).
 
 ### Further Information
 
