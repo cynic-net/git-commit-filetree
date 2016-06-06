@@ -147,5 +147,5 @@ $git commit-filetree $branch $files
 test_equal \
     '003e598 testbr@{0}: commit-filetree: Build from source commit 737b0f4.
 737b0f4 testbr@{1}: branch: Created from master' \
-    "$($git reflog $branch)"
+    "$($git reflog --no-decorate $branch)"
 end_test
