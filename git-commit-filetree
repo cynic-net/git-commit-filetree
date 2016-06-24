@@ -3,7 +3,7 @@
 #  git-commit-filetree - commit an arbitrary tree of files
 #                        to a branch in a git repository.
 #
-#  Version:  cjsnjr.2015-08-08.0
+#  Version:  cjsnjr.2016-06-24.0
 #
 #  Authors:
 #    Curt J. Sampson <cjs@cynic.net>
@@ -30,6 +30,7 @@ err() {
 
 branch="$1"; shift || true
 path="$1"; shift || true
+prefix="$1"; shift || true
 [ -z "$path" -o -n "$1" ] \
     && err 129 "Usage: git commit-filetree <branch> <path>"
 
@@ -50,7 +51,15 @@ export GIT_INDEX_FILE=$index_file
 git read-tree --empty
 git --work-tree="$path" add -A
 tree_sha=$(git write-tree)
+
 parent_tree_sha=$(git log -1 $ref --format='%T')
+[ ! -z "$prefix" ] && {
+    git read-tree --empty
+    git read-tree "$parent_tree_sha"
+    git rm -r --ignore-unmatch "$prefix"
+    git read-tree --prefix="$prefix" "$tree_sha"
+    tree_sha=$(git write-tree)
+}
 [ "$tree_sha" = "$parent_tree_sha" ] && { internal_error=false; exit 0; }
 
 commit_msg="Build from source commit $source_sha."

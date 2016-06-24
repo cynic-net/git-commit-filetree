@@ -2,7 +2,7 @@
 . t/test-lib.sh
 set -e
 
-echo "1..9"
+echo "1..10"
 
 branch=testbr
 repo=tmp/test/repo
@@ -63,6 +63,7 @@ make_test_repo
 $git branch $branch
 echo bar > $files/one
 echo bar > $files/subdir/two
+
 $git commit-filetree $branch $files
 
 test_equal 'Build from source commit 737b0f4.' \
@@ -148,4 +149,24 @@ test_equal \
     '003e598 testbr@{0}: commit-filetree: Build from source commit 737b0f4.
 737b0f4 testbr@{1}: branch: Created from master' \
     "$($git reflog $branch)"
+end_test
+
+##### 10
+
+start_test "Check commit to a directory on target branch"
+
+make_test_repo
+$git branch $branch
+
+echo bar > $files/one
+echo bar > $files/subdir/two
+$git commit-filetree $branch $files prefix
+test_equal "f21718f231f65e0e2bea8c7329bcb877974c9646 refs/heads/testbr" \
+            "$($git_show_refs $branch)"
+
+echo foobar > $files/subdir/two
+$git commit-filetree $branch $files prefix
+test_equal "003e5987f3XXXef5ad25ebd23b968de5f510 refs/heads/testbr" \
+            "$($git_show_refs $branch)"
+
 end_test
