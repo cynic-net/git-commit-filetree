@@ -115,7 +115,7 @@ $git branch $branch
 
 echo bar > $files/one
 echo bar > $files/subdir/two
-(cd $repo && ../../../git-commit-filetree $branch ../files)
+(cd $repo && ../../../bin/git-commit-filetree $branch ../files)
 
 test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
             "$($git_show_refs $branch)"

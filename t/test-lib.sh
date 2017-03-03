@@ -2,7 +2,7 @@
 
 cd $(dirname $0)/..
 mkdir -p tmp
-PATH=$(cd $(dirname $0)/.. && /bin/pwd):$PATH
+PATH=$(cd $(dirname $0)/../bin && /bin/pwd):$PATH
 
 export TZ=UTC
 export GIT_AUTHOR_EMAIL=author@example.com
