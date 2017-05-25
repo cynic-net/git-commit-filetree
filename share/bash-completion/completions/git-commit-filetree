@@ -1,0 +1,11 @@
+_git_commit_filetree_completion()
+{
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    case $COMP_CWORD in
+    1) COMPREPLY=( $(compgen \
+            -W "$(git for-each-ref --format='%(refname:short)' refs/heads/)" \
+            -- "$cur") ) ;;
+    2) COMPREPLY=( $(compgen -G "$cur"* -- "$cur") ) ;;
+    esac
+}
+complete -F _git_complete_commit_filetree git-commit-filetree
