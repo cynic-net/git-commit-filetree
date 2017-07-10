@@ -2,7 +2,7 @@
 . t/test-lib.sh
 set -e
 
-echo "1..9"
+echo "1..10"
 
 branch=testbr
 repo=tmp/test/repo
@@ -34,6 +34,16 @@ end_test
 
 ##### 2
 
+start_test 'Check we fail when target directory does not exist'
+make_test_repo
+$git branch $branch
+test_equal "Invalid ref: refs/heads/testbr
+128" \
+    "$($git commit-filetree 2>&1 $branch does-not-exist; echo $?)"
+end_test
+
+##### 3
+
 start_test 'Check we fail when untracked files are in the working copy.'
 make_test_repo
 $git branch $branch
@@ -43,7 +53,7 @@ test_equal 'Cannot commit with untracked files in working copy.
     "$($git commit-filetree 2>&1 $branch $files; echo $?)"
 end_test
 
-##### 3
+##### 4
 
 start_test 'Check we fail when working copy is dirty'
 make_test_repo
@@ -55,7 +65,7 @@ test_equal 'Cannot commit with uncommited files in working copy.
     "$($git commit-filetree 2>&1 $branch $files; echo $?)"
 end_test
 
-##### 4
+##### 5
 
 start_test 'Check commit message'
 
@@ -71,7 +81,7 @@ test_equal 'Build from source commit 737b0f4.' \
 end_test
 
 
-##### 5
+##### 6
 
 start_test 'Check commit'
 
@@ -90,7 +100,7 @@ test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
 
 end_test
 
-##### 6
+##### 7
 
 start_test 'Check commit with refs/heads/branchname'
 
@@ -106,7 +116,7 @@ test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
 
 end_test
 
-##### 7
+##### 8
 
 start_test 'Check commit when script is run standalone'
 
@@ -122,7 +132,7 @@ test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
 
 end_test
 
-##### 8
+##### 9
 
 start_test 'Check we do not commit if it would be an empty commit.'
 make_test_repo
@@ -136,7 +146,7 @@ test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
             "$($git_show_refs $branch)"
 end_test
 
-##### 9
+##### 10
 
 start_test 'Check reflog update'
 make_test_repo
