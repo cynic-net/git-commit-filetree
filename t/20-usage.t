@@ -1,4 +1,4 @@
-#/bin/bash
+#!/usr/bin/env bash
 . t/test-lib.sh
 echo "1..4"
 
