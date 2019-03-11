@@ -6,8 +6,8 @@ Overview
 
 `git-commit-filetree` is a git command that takes an arbitrary tree
 of files (typically not part of a Git repository's working copy) and
-commits that file tree to the end of a given branch. It can be run as a
-standalone script, or installed as a git command.
+commits that tree to the tip of a given branch. It can be run as a
+standalone script or installed as a git subcommand.
 
 Usage: `git commit-filetree <branch> <path>`
 
@@ -19,12 +19,11 @@ avoids making a second clone of the repo with its own working copy,
 doing the commit there, and then moving the new commit from the second
 repo to the first.
 
-### Usage with Github.io
+### Usage with GitHub Pages
 
-A classic use case is when you're using your own build system to create
-a static website to be hosted on
-[github.io](https://help.github.com/categories/github-pages-basics/).
-The procedure is as follows:
+A classic use case is when you're using your own build system to
+create a static website to be hosted on [`github.io`]. The procedure
+is as follows:
 
 * Check out your repo's `master` branch (or whichever branch contains your
   source code and build system).
@@ -34,6 +33,7 @@ The procedure is as follows:
 * `git push --all` to upload your latest source and generated site to Github.
 * Github.io will start serving the new version of the site from the
   `gh-pages` branch.
+
 
 Missing Features
 ----------------
@@ -49,6 +49,7 @@ program.
   the time git-commit-filetree was run, e.g., `%h`.)
 * Manual page.
 
+
 Installation and Invocation
 ---------------------------
 
@@ -56,13 +57,13 @@ The script can be invoked in one of two ways. In both cases,
 you'll need to ensure that the executable bit is set.
 
 * Directly from the command line. E.g.,
-  `./git-commit-filetree mybranch myfiles`.
+  `path/to/git-commit-filetree mybranch myfiles`.
 * Copy the script to any directory in your path and invoke it through
   `git commit-filetree mybranch myfiles`.
 
-The second method will allow you to use `git` parameters before the
-`commit-filetree` command, such as `-C`, `--git-dir`, `--work-tree`, and
-so on.
+The second method will allow you to use `git` options before the
+`commit-filetree` command, such as `-C`, `--git-dir`, `--work-tree`,
+and so on.
 
 ### Usage with Windows
 
@@ -70,6 +71,7 @@ The standard Git installation for Windows includes the Bash shell, and
 so it appears that Windows has everything necessary to run this command.
 However, we've not tried it. If you wish to get it working, we would
 appreciate any feedback you could offer.
+
 
 Testing
 -------
@@ -80,8 +82,9 @@ the [TAP Specification](https://testanything.org/tap-specification.html).
 The top-level `Test` script will run the tests using perl's `prove`
 program, which is part of the standard install on most GNU/Linux
 systems. However, you should be able to use other TAP test harnesses
-should the need arise. If you have any difficulty, please feel free to
-contact the authors for help.
+instead. If you have any difficulty, please feel free to contact the
+authors for help.
+
 
 Authors and History
 -------------------
@@ -100,6 +103,7 @@ of git use.)
 
 cjs wrote the test framework and tests, and the `git-commit-filetree`
 command framework (error handling, usage messages, etc.).
+
 
 Copying and Usage
 -----------------
@@ -147,3 +151,7 @@ commercial purposes, all without asking permission. However:
 * When using or citing the work, you should not imply endorsement by the
   authors.
 
+
+
+<!-------------------------------------------------------------------->
+[`github.io`]: https://help.github.com/categories/github-pages-basics/
