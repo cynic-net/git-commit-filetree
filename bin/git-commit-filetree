@@ -3,13 +3,14 @@
 #  git-commit-filetree - commit an arbitrary tree of files
 #                        to a branch in a git repository.
 #
-#  Version:  cjsnjr.2016-02-19.0
+#  Version:  cjsnjr.2019-03-23.0
+#
+#  Please find the latest version of this (with tests and copying rights) at:
+#    https://github.com/cynic-net/git-commit-filetree
 #
 #  Authors:
 #    Curt J. Sampson <cjs@cynic.net>
 #    Nishant Rodrigues <nishantjr@gmail.com>
-#  Please find the latest version of this (with tests and copying rights) at:
-#    https://github.com/cjs-cynic-net/git-commit-filetree
 #
 
 set -e
