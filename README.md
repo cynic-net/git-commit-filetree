@@ -41,8 +41,6 @@ Missing Features
 The following features are still missing from this version of the
 program.
 
-* Test fixes for Git 2.5.x (or perhaps all of Git 2.x) due to a
-  format change git log's `%d` format.
 * Update the reflog after doing the commit.
 * Add the ability to specify a commit message.
   (This should allow a token to substitute the current HEAD commit at
