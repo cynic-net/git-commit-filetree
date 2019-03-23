@@ -41,6 +41,9 @@ Missing Features
 The following features are still missing from this version of the
 program.
 
+* Deal with cases when the local branch to which we're committing is
+  behind its remote tracking branch. Normally we'd want the local branch
+  to be fast-forwarded to match the remote before doing our commit.
 * Update the reflog after doing the commit.
 * Add the ability to specify a commit message.
   (This should allow a token to substitute the current HEAD commit at
