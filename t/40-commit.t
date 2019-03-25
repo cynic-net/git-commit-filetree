@@ -11,7 +11,12 @@ export GIT_AUTHOR_DATE=2000-01-01T00:00:00
 export GIT_COMMITTER_DATE=2001-01-01T00:00:00
 
 git="git --git-dir=$repo/.git --work-tree=$repo"
-git_show_refs="$git show-ref"
+git_show_refs="$git show-ref --abbrev=12"
+assert_branch() {
+    local output="$1"
+    local pattern="${2:-$branch}"
+    test_equal "$output" "$($git_show_refs "$pattern")"
+}
 
 make_test_repo() {
     rm -rf tmp/test
@@ -77,16 +82,13 @@ start_test 'Commit data correct'
 
 make_test_repo
 $git branch $branch
-test_equal "737b0f4390513917f3a19eece0dcd6a04e5deca3 refs/heads/master
-737b0f4390513917f3a19eece0dcd6a04e5deca3 refs/heads/testbr" \
-            "$($git_show_refs)"
+assert_branch '737b0f439051 refs/heads/master' master
+assert_branch '737b0f439051 refs/heads/testbr'
 
 echo bar > $files/one
 echo bar > $files/subdir/two
 $git commit-filetree $branch $files
-
-test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
-            "$($git_show_refs $branch)"
+assert_branch '003e5987f385 refs/heads/testbr'
 
 end_test
 
@@ -100,9 +102,7 @@ $git branch $branch
 echo bar > $files/one
 echo bar > $files/subdir/two
 $git commit-filetree refs/heads/$branch $files
-
-test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
-            "$($git_show_refs $branch)"
+assert_branch '003e5987f385 refs/heads/testbr'
 
 end_test
 
@@ -116,9 +116,7 @@ $git branch $branch
 echo bar > $files/one
 echo bar > $files/subdir/two
 (cd $repo && ../../../bin/git-commit-filetree $branch ../files)
-
-test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
-            "$($git_show_refs $branch)"
+assert_branch '003e5987f385 refs/heads/testbr'
 
 end_test
 
@@ -132,8 +130,7 @@ echo bar > $files/subdir/two
 $git commit-filetree $branch $files
 $git commit-filetree $branch $files
 $git commit-filetree $branch $files
-test_equal "003e5987f3852ef5ad25ebd23b968de5f5104550 refs/heads/testbr" \
-            "$($git_show_refs $branch)"
+assert_branch '003e5987f385 refs/heads/testbr'
 end_test
 
 ##### 9
