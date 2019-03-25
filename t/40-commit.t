@@ -2,7 +2,7 @@
 . t/test-lib.sh
 set -e -o 'pipefail'
 
-echo "1..9"
+echo "1..10"
 
 branch=testbr
 repo=tmp/test/repo
@@ -145,4 +145,38 @@ test_equal \
     '003e598 testbr@{0}: commit-filetree: Build from source commit 737b0f4.
 737b0f4 testbr@{1}: branch: Created from master' \
     "$($git reflog --no-decorate $branch)"
+end_test
+
+##### 10
+
+start_test 'Fast-forward commit branch'
+make_test_repo
+
+#   Test branch to which we commit
+$git branch $branch
+assert_branch '737b0f439051 refs/heads/testbr'
+touch $files/one; $git commit-filetree $branch $files
+assert_branch '8a4cf12bef5f refs/heads/testbr'
+
+#   Test tracking branch with an additional commit
+$git branch $branch-tracking $branch
+assert_branch '8a4cf12bef5f refs/heads/testbr-tracking' $branch-tracking
+touch $files/two; $git commit-filetree $branch-tracking $files
+assert_branch 'fcb13b95f172 refs/heads/testbr-tracking' $branch-tracking
+
+#   Make test branch track test-tracking branch; it will be one commit behind.
+$git branch --set-upstream-to=$branch-tracking $branch
+assert_branch '8a4cf12bef5f refs/heads/testbr'
+touch $files/three; $git commit-filetree $branch $files
+#   Parent commit is head of tracking branch.
+expected_log="\
+____________
+fcb13b95f172
+8a4cf12bef5f"
+test_equal "$expected_log" \
+    "$($git log -3 --abbrev=12 --pretty='format:%h %ct' $branch)"
+
+#   If you want to view the commit graph
+#$git log --all --graph --pretty=oneline --abbrev=12
+
 end_test
