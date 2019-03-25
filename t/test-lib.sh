@@ -30,6 +30,26 @@ fail_test() {
     ENCOUNTERED_FAILURE=true
 }
 
+expect_fails() {
+    #   Run the passed-in assertion and expect that it fails.
+    #   This involves some tricky handling of $ENCOUNTERED_FAILURE
+    #   (which kinda feels like an error-preservation monad).
+    #   This trickiness probably demonstrates design deficiences in
+    #   our so-called "test framework."
+    #
+    local old_ENCOUNTERED_FAILURE=$ENCOUNTERED_FAILURE
+    ENCOUNTERED_FAILURE=false
+    echo "# Expecting failure for" "$@"
+    "$@"
+    if $ENCOUNTERED_FAILURE; then
+        #   As expected; cleanup failure so this doesn't cause test to fail.
+        ENCOUNTERED_FAILURE=$old_ENCOUNTERED_FAILURE
+    else
+        echo "# Expected failure did not occur"
+        ENCOUNTERED_FAILURE=true
+    fi
+}
+
 test_equal() {
     local expected="$1" actual="$2"
     local not=''
