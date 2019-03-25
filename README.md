@@ -41,9 +41,6 @@ Missing Features
 The following features are still missing from this version of the
 program.
 
-* Deal with cases when the local branch to which we're committing is
-  behind its remote tracking branch. Normally we'd want the local branch
-  to be fast-forwarded to match the remote before doing our commit.
 * Update the reflog after doing the commit.
 * Add the ability to specify a commit message.
   (This should allow a token to substitute the current HEAD commit at
@@ -66,6 +63,24 @@ The second method will allow you to use `git` options before the
 `commit-filetree` command, such as `-C`, `--git-dir`, `--work-tree`,
 and so on.
 
+#### Fast-forwarding to Tracking Branch Head
+
+If the release branch to which you're committing has a tracking branch,
+the local branch will first be fast-forwarded to the head of that
+tracking branch before the commit is made. This is almost invariably
+the desired behaviour: if someone else has released new versions on
+the release branch you want to continue that history rather than
+diverging. (I.e., you want the `fetch`/`git-commit-filetree`/`push`
+sequence to Just Work without having to do any other manipulation of
+the release branch.)
+
+If your release branch has diverged from its tracking branch,
+`git-commit-filetree` will currently print an error and refuse to
+commit, and you will need to manually resolve the divergence. If you
+wish to be able to commit on a divergent local branch, you can modify
+the script not to generate this error. If there's sufficient demand, a
+command-line option could be added to toggle this behaviour.
+
 ### Usage with Windows
 
 The standard Git installation for Windows includes the Bash shell, and
@@ -85,6 +100,11 @@ program, which is part of the standard install on most GNU/Linux
 systems. However, you should be able to use other TAP test harnesses
 instead. If you have any difficulty, please feel free to contact the
 authors for help.
+
+As a side note, this hacked-together testing framework has probably
+been taken about as far as it reasonably can. If much more functionality
+needs to be added (to the program or the test framework), the framework
+probably wants a rewrite in a better language like Python.
 
 
 Authors and History
