@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 . t/test-lib.sh
-echo '1..5'
+echo '1..6'
 
 
 ##### 1
@@ -43,4 +43,13 @@ end_test
 ##### 5
 start_test 'test_equal failure'
 expect_fails test_equal 'abc' 'XYZ'
+end_test
+
+##### 6
+start_test 'test_equal glob'
+test_equal 'a*' 'abc'
+expect_fails test_equal 'abc' 'Abc'
+test_equal '[Aa]bc' 'Abc'
+test_equal '[Aa]bc' 'abc'
+expect_fails test_equal 'abc' '[Aa]bc'
 end_test

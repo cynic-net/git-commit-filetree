@@ -60,7 +60,7 @@ test_equal() {
         return
     }
 
-    [ "$expected" == "$actual" ] || {
+    [[ $actual = $expected ]] || {
         fail_test
         echo "# Expected: '$expected'"
         echo "#   Actual: '$actual'"
