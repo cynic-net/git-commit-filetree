@@ -27,7 +27,7 @@ end_test
 ##### 4
 
 start_test 'Check must be run from a git repo (or have --git-dir)'
-expected='fatal: Not a git repository (or any of the parent directories): .git'
+expected='fatal: [Nn]ot a git repository (or any of the parent directories): .git'
 actual=$(cd /; git commit-filetree 2>&1 >/dev/null || true)
 test_equal "$expected" "$actual"
 end_test
