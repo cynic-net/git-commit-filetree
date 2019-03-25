@@ -25,7 +25,7 @@ make_test_repo() {
 
 ##### 1
 
-start_test 'Check we fail when branch does not exist'
+start_test 'Fail when branch does not exist'
 make_test_repo
 test_equal "Invalid ref: refs/heads/testbr
 128" \
@@ -34,7 +34,7 @@ end_test
 
 ##### 2
 
-start_test 'Check we fail when untracked files are in the working copy.'
+start_test 'Fail when untracked files are in the working copy.'
 make_test_repo
 $git branch $branch
 touch $repo/untracked
@@ -45,7 +45,7 @@ end_test
 
 ##### 3
 
-start_test 'Check we fail when working copy is dirty'
+start_test 'Fail when working copy is dirty'
 make_test_repo
 $git branch $branch
 touch $repo/three
@@ -57,7 +57,7 @@ end_test
 
 ##### 4
 
-start_test 'Check commit message'
+start_test 'Commit message correct'
 
 make_test_repo
 $git branch $branch
@@ -73,7 +73,7 @@ end_test
 
 ##### 5
 
-start_test 'Check commit'
+start_test 'Commit data correct'
 
 make_test_repo
 $git branch $branch
@@ -92,7 +92,7 @@ end_test
 
 ##### 6
 
-start_test 'Check commit with refs/heads/branchname'
+start_test 'Commit branchname has refs/heads prefix'
 
 make_test_repo
 $git branch $branch
@@ -108,7 +108,7 @@ end_test
 
 ##### 7
 
-start_test 'Check commit when script is run standalone'
+start_test 'Run script standalone (instead of as git subcommand)'
 
 make_test_repo
 $git branch $branch
@@ -124,7 +124,7 @@ end_test
 
 ##### 8
 
-start_test 'Check we do not commit if it would be an empty commit.'
+start_test 'No commit if commit would be empty'
 make_test_repo
 $git branch $branch
 echo bar > $files/one
@@ -138,7 +138,7 @@ end_test
 
 ##### 9
 
-start_test 'Check reflog update'
+start_test 'Reflog is updated'
 make_test_repo
 $git branch $branch
 echo bar > $files/one
