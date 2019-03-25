@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 . t/test-lib.sh
-set -e
+set -e -o 'pipefail'
 
 echo "1..9"
 
