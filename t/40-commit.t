@@ -173,7 +173,7 @@ $git branch --set-upstream-to=$branch-tracking $branch
 assert_branch '8a4cf12bef5f refs/heads/testbr'
 
 touch $files/three
-$git commit-filetree $branch $files
+test_equal $'\n0' "$($git commit-filetree 2>&1 $branch $files; echo $?)"
 #   Parent commit is head of tracking branch.
 expected_log="\
 ____________
@@ -195,6 +195,10 @@ make_test_repo_with_two_branches
 #   Add another commit to local branch that's not on tracking branch.
 touch $files/four
 $git commit-filetree $branch $files
+assert_branch 'fe1296c53332 refs/heads/testbr'
+
+#   Make test branch track test-tracking branch, but 1/1 ahead/behind
+$git branch --set-upstream-to=$branch-tracking $branch
 
 touch $files/three
 test_equal 'Cannot fast-foward local branch to tracking branch head.
