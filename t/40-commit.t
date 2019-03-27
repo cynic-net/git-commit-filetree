@@ -176,14 +176,14 @@ start_test 'Fast-forward commit branch'
 make_test_repo_with_two_branches
 
 #   Make test branch track test-tracking branch, but it's one commit behind.
-$git branch --set-upstream-to=$branch-tracking $branch
+$git >/dev/null branch --set-upstream-to=$branch-tracking $branch
 assert_branch '8a4cf12bef5f refs/heads/testbr'
 
 touch $files/three
-test_equal $'\n0' "$($git commit-filetree 2>&1 $branch $files; echo $?)"
+test_equal 0 "$($git commit-filetree 2>&1 $branch $files; echo $?)"
 #   Parent commit is head of tracking branch.
 expected_log="
-____________ 978307200
+ef65bb4d9108 978307200
 fcb13b95f172 978307200
 8a4cf12bef5f 978307200"
 test_equal "$expected_log" \
@@ -191,10 +191,10 @@ test_equal "$expected_log" \
 
 #   We can add more commits to commit branch when already ahead of tracking
 touch $files/four
-test_equal $'\n0' "$($git commit-filetree 2>&1 $branch $files; echo $?)"
+test_equal 0 "$($git commit-filetree 2>&1 $branch $files; echo $?)"
 expected_log="
-____________ 978307200
-____________ 978307200
+191c80c3688d 978307200
+ef65bb4d9108 978307200
 fcb13b95f172 978307200
 8a4cf12bef5f 978307200"
 test_equal "$expected_log" \
@@ -213,7 +213,7 @@ $git commit-filetree $branch $files
 assert_branch '58cce3125df7 refs/heads/testbr'
 
 #   Make test branch track test-tracking branch, but 1/1 ahead/behind
-$git branch --set-upstream-to=$branch-tracking $branch
+$git >/dev/null branch --set-upstream-to=$branch-tracking $branch
 
 touch $files/three
 exitcode="$($git commit-filetree $branch $files >/dev/null 2>&1; echo $?)"

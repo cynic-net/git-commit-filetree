@@ -30,12 +30,20 @@ err() {
 }
 
 fast_forward_to_tracking() {
-    declare -g branch tracking
+    declare -g ref tracking
     #   Local ahead of tracking; carry on.
-    git merge-base --is-ancestor "$tracking" "$branch" && return 0
+    git merge-base --is-ancestor "$tracking" "$ref" && return 0
     #   Local can fast-foward to tracking; do it.
-    git merge-base --is-ancestor "$branch" "$tracking" \
-        && git update-ref $branch $tracking -m 'commit-filetree: fast-forward'
+    git merge-base --is-ancestor "$ref" "$tracking" && {
+        #   Sigh. Not only is it not well documented that update-ref
+        #   MUST have the `refs/heads/branchname` version of the ref--
+        #   plain old `branchname` won't do--but worse, if you give an
+        #   invalid ref to be updated, update-ref will give no error
+        #   message and return success.
+        git update-ref "$ref" "$tracking" \
+            -m 'commit-filetree: fast-forward'
+        return 0
+    }
     #   Otherwise the user must deal with the divergence.
     err 3 "Branch $branch has diverged from tracking $tracking." \
         $'\n''You must fix this manually before using git-commit-filetree.'
