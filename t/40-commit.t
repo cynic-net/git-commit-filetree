@@ -83,12 +83,12 @@ start_test 'Commit data correct'
 make_test_repo
 $git branch $branch
 assert_branch '737b0f439051 refs/heads/master' master
-assert_branch '737b0f439051 refs/heads/testbr'
+assert_branch "737b0f439051 refs/heads/$branch"
 
 echo bar > $files/one
 echo bar > $files/subdir/two
 $git commit-filetree $branch $files
-assert_branch '003e5987f385 refs/heads/testbr'
+assert_branch "003e5987f385 refs/heads/$branch"
 
 end_test
 
@@ -102,7 +102,7 @@ $git branch $branch
 echo bar > $files/one
 echo bar > $files/subdir/two
 $git commit-filetree refs/heads/$branch $files
-assert_branch '003e5987f385 refs/heads/testbr'
+assert_branch "003e5987f385 refs/heads/$branch"
 
 end_test
 
@@ -116,7 +116,7 @@ $git branch $branch
 echo bar > $files/one
 echo bar > $files/subdir/two
 (cd $repo && ../../../bin/git-commit-filetree $branch ../files)
-assert_branch '003e5987f385 refs/heads/testbr'
+assert_branch "003e5987f385 refs/heads/$branch"
 
 end_test
 
@@ -130,7 +130,7 @@ echo bar > $files/subdir/two
 $git commit-filetree $branch $files
 $git commit-filetree $branch $files
 $git commit-filetree $branch $files
-assert_branch '003e5987f385 refs/heads/testbr'
+assert_branch "003e5987f385 refs/heads/$branch"
 end_test
 
 ##### 9
@@ -154,15 +154,15 @@ make_test_repo_with_two_branches() {
 
     #   Test branch to which we commit
     $git branch $branch
-    assert_branch '737b0f439051 refs/heads/testbr'
+    assert_branch "737b0f439051 refs/heads/$branch"
     touch $files/one; $git commit-filetree $branch $files
-    assert_branch '8a4cf12bef5f refs/heads/testbr'
+    assert_branch "8a4cf12bef5f refs/heads/$branch"
 
     #   Test tracking branch with an additional commit
     $git branch $branch-tracking $branch
-    assert_branch '8a4cf12bef5f refs/heads/testbr-tracking' $branch-tracking
+    assert_branch "8a4cf12bef5f refs/heads/$branch-tracking" $branch-tracking
     touch $files/two; $git commit-filetree $branch-tracking $files
-    assert_branch 'fcb13b95f172 refs/heads/testbr-tracking' $branch-tracking
+    assert_branch "fcb13b95f172 refs/heads/$branch-tracking" $branch-tracking
 }
 
 #   If you want to view the commit graph in a test, add the following.
@@ -177,7 +177,7 @@ make_test_repo_with_two_branches
 
 #   Make test branch track test-tracking branch, but it's one commit behind.
 $git >/dev/null branch --set-upstream-to=$branch-tracking $branch
-assert_branch '8a4cf12bef5f refs/heads/testbr'
+assert_branch "8a4cf12bef5f refs/heads/$branch"
 
 touch $files/three
 test_equal 0 "$($git commit-filetree 2>&1 $branch $files; echo $?)"
@@ -210,7 +210,7 @@ make_test_repo_with_two_branches
 #   Add another commit to local branch that's not on tracking branch.
 touch $files/commit-from-elsewhere
 $git commit-filetree $branch $files
-assert_branch '58cce3125df7 refs/heads/testbr'
+assert_branch "58cce3125df7 refs/heads/$branch"
 
 #   Make test branch track test-tracking branch, but 1/1 ahead/behind
 $git >/dev/null branch --set-upstream-to=$branch-tracking $branch
