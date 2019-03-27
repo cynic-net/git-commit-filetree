@@ -27,6 +27,7 @@ end_test() {
 }
 
 fail_test() {
+    echo "# fail_test:" "$@"
     ENCOUNTERED_FAILURE=true
 }
 
