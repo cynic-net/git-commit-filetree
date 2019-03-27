@@ -30,8 +30,17 @@ err() {
 }
 
 fast_forward_to_tracking() {
-    git merge-base --is-ancestor $tracking $branch && return 0
-    err 99 "TRACKING BRANCH WRITE ME '$tracking'"
+    declare -g branch tracking
+    #   Local ahead of tracking; carry on.
+    git merge-base --is-ancestor "$tracking" "$branch" && return 0
+    #   Local can fast-foward to tracking; do it.
+    git merge-base --is-ancestor "$branch" "$tracking" \
+        && git update-ref $branch $tracking -m 'commit-filetree: fast-forward'
+    #   Otherwise the user must deal with the divergence.
+    err 3 "Branch $branch has diverged from tracking $tracking." \
+        $'\n''You must fix this manually before using git-commit-filetree.'
+        #   We should probably extend this explanation with suggestions
+        #   on how to fix the problem.
 }
 
 branch="$1"; shift || true

@@ -147,7 +147,7 @@ test_equal \
     "$($git reflog --no-decorate $branch)"
 end_test
 
-##### 10
+##### fast-foward test support
 
 make_test_repo_with_two_branches() {
     make_test_repo
@@ -164,6 +164,13 @@ make_test_repo_with_two_branches() {
     touch $files/two; $git commit-filetree $branch-tracking $files
     assert_branch 'fcb13b95f172 refs/heads/testbr-tracking' $branch-tracking
 }
+
+#   If you want to view the commit graph in a test, add the following.
+view_commit_graph() {
+    $git log --all --graph --pretty=oneline --abbrev=12
+}
+
+##### 10
 
 start_test 'Fast-forward commit branch'
 make_test_repo_with_two_branches
@@ -193,9 +200,6 @@ fcb13b95f172 978307200
 test_equal "$expected_log" \
     "$(echo; $git log -4 --abbrev=12 --pretty='format:%h %ct' $branch)"
 
-#   If you want to view the commit graph
-#$git log --all --graph --pretty=oneline --abbrev=12
-
 end_test
 
 ##### 11
@@ -212,11 +216,10 @@ assert_branch '58cce3125df7 refs/heads/testbr'
 $git branch --set-upstream-to=$branch-tracking $branch
 
 touch $files/three
-test_equal 'Cannot fast-foward local branch to tracking branch head.
-1' \
-    "$($git commit-filetree 2>&1 $branch $files; echo $?)"
-
-#   If you want to view the commit graph
-#$git log --all --graph --pretty=oneline --abbrev=12
+exitcode="$($git commit-filetree $branch $files >/dev/null 2>&1; echo $?)"
+test_equal 3 "$exitcode"
+message=$($git commit-filetree 2>&1 $branch $files || true)
+expected='Branch testbr has diverged from tracking refs/heads/testbr-tracking'
+[[ $message =~ $expected ]] || fail_test "bad message: $message"
 
 end_test
