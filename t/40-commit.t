@@ -2,7 +2,7 @@
 . t/test-lib.sh
 set -e -o 'pipefail'
 
-echo "1..10"
+echo "1..11"
 
 branch=testbr
 repo=tmp/test/repo
@@ -149,25 +149,31 @@ end_test
 
 ##### 10
 
+make_test_repo_with_two_branches() {
+    make_test_repo
+
+    #   Test branch to which we commit
+    $git branch $branch
+    assert_branch '737b0f439051 refs/heads/testbr'
+    touch $files/one; $git commit-filetree $branch $files
+    assert_branch '8a4cf12bef5f refs/heads/testbr'
+
+    #   Test tracking branch with an additional commit
+    $git branch $branch-tracking $branch
+    assert_branch '8a4cf12bef5f refs/heads/testbr-tracking' $branch-tracking
+    touch $files/two; $git commit-filetree $branch-tracking $files
+    assert_branch 'fcb13b95f172 refs/heads/testbr-tracking' $branch-tracking
+}
+
 start_test 'Fast-forward commit branch'
-make_test_repo
+make_test_repo_with_two_branches
 
-#   Test branch to which we commit
-$git branch $branch
-assert_branch '737b0f439051 refs/heads/testbr'
-touch $files/one; $git commit-filetree $branch $files
-assert_branch '8a4cf12bef5f refs/heads/testbr'
-
-#   Test tracking branch with an additional commit
-$git branch $branch-tracking $branch
-assert_branch '8a4cf12bef5f refs/heads/testbr-tracking' $branch-tracking
-touch $files/two; $git commit-filetree $branch-tracking $files
-assert_branch 'fcb13b95f172 refs/heads/testbr-tracking' $branch-tracking
-
-#   Make test branch track test-tracking branch; it will be one commit behind.
+#   Make test branch track test-tracking branch, but it's one commit behind.
 $git branch --set-upstream-to=$branch-tracking $branch
 assert_branch '8a4cf12bef5f refs/heads/testbr'
-touch $files/three; $git commit-filetree $branch $files
+
+touch $files/three
+$git commit-filetree $branch $files
 #   Parent commit is head of tracking branch.
 expected_log="\
 ____________
@@ -175,6 +181,25 @@ fcb13b95f172
 8a4cf12bef5f"
 test_equal "$expected_log" \
     "$($git log -3 --abbrev=12 --pretty='format:%h %ct' $branch)"
+
+#   If you want to view the commit graph
+#$git log --all --graph --pretty=oneline --abbrev=12
+
+end_test
+
+##### 11
+
+start_test 'Cannot fast-forward commit branch'
+make_test_repo_with_two_branches
+
+#   Add another commit to local branch that's not on tracking branch.
+touch $files/four
+$git commit-filetree $branch $files
+
+touch $files/three
+test_equal 'Cannot fast-foward local branch to tracking branch head.
+1' \
+    "$($git commit-filetree 2>&1 $branch $files; echo $?)"
 
 #   If you want to view the commit graph
 #$git log --all --graph --pretty=oneline --abbrev=12
