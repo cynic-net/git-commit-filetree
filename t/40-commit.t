@@ -175,12 +175,23 @@ assert_branch '8a4cf12bef5f refs/heads/testbr'
 touch $files/three
 test_equal $'\n0' "$($git commit-filetree 2>&1 $branch $files; echo $?)"
 #   Parent commit is head of tracking branch.
-expected_log="\
-____________
-fcb13b95f172
-8a4cf12bef5f"
+expected_log="
+____________ 978307200
+fcb13b95f172 978307200
+8a4cf12bef5f 978307200"
 test_equal "$expected_log" \
-    "$($git log -3 --abbrev=12 --pretty='format:%h %ct' $branch)"
+    "$(echo; $git log -3 --abbrev=12 --pretty='format:%h %ct' $branch)"
+
+#   We can add more commits to commit branch when already ahead of tracking
+touch $files/four
+test_equal $'\n0' "$($git commit-filetree 2>&1 $branch $files; echo $?)"
+expected_log="
+____________ 978307200
+____________ 978307200
+fcb13b95f172 978307200
+8a4cf12bef5f 978307200"
+test_equal "$expected_log" \
+    "$(echo; $git log -4 --abbrev=12 --pretty='format:%h %ct' $branch)"
 
 #   If you want to view the commit graph
 #$git log --all --graph --pretty=oneline --abbrev=12
@@ -193,9 +204,9 @@ start_test 'Cannot fast-forward commit branch'
 make_test_repo_with_two_branches
 
 #   Add another commit to local branch that's not on tracking branch.
-touch $files/four
+touch $files/commit-from-elsewhere
 $git commit-filetree $branch $files
-assert_branch 'fe1296c53332 refs/heads/testbr'
+assert_branch '58cce3125df7 refs/heads/testbr'
 
 #   Make test branch track test-tracking branch, but 1/1 ahead/behind
 $git branch --set-upstream-to=$branch-tracking $branch
