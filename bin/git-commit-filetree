@@ -13,7 +13,7 @@
 #    Nishant Rodrigues <nishantjr@gmail.com>
 #
 
-set -e
+set -e -o pipefail
 
 SUBDIRECTORY_OK=1
 . "$(git --exec-path)/git-sh-setup"
