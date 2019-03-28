@@ -3,7 +3,7 @@
 #  git-commit-filetree - commit an arbitrary tree of files
 #                        to a branch in a git repository.
 #
-#  Version:  cjsnjr.22019-03-28.0
+#  Version:  cjsnjr.2019-03-29.0
 #
 #  Please find the latest version of this (with tests and copying rights) at:
 #    https://github.com/cynic-net/git-commit-filetree
@@ -30,17 +30,18 @@ err() {
 }
 
 fast_forward_to_tracking() {
-    declare -g ref tracking
+    declare -g branch ref tracking
     #   Local ahead of tracking; carry on.
     git merge-base --is-ancestor "$tracking" "$ref" && return 0
     #   Local can fast-foward to tracking; do it.
     git merge-base --is-ancestor "$ref" "$tracking" && {
-        #   Sigh. Not only is it not well documented that update-ref
-        #   MUST have the `refs/heads/branchname` version of the ref--
-        #   plain old `branchname` won't do--but worse, if you give an
-        #   invalid ref to be updated, update-ref will give no error
-        #   message and return success.
-        git update-ref "$ref" "$tracking" \
+        #   Remember, update-ref takes only a full ref name; giving it
+        #   `abranch` will create or update that name at the top of the
+        #   "refs tree," not `refs/heads/abranch`. To help catch this kind
+        #   of error, we give the third argument that must be the current
+        #   value where short names such as `abranch` are expanded to
+        #   `refs/heads/abranch`.
+        git update-ref "$ref" "$tracking" "$branch" \
             -m 'commit-filetree: fast-forward'
         return 0
     }
