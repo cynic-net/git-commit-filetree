@@ -82,7 +82,7 @@ tree_sha=$(git write-tree)
 parent_tree_sha=$(git log -1 $ref --format='%T')
 [ "$tree_sha" = "$parent_tree_sha" ] && { internal_error=false; exit 0; }
 
-commit_msg="Build from source commit $source_sha."
+commit_msg=${GIT_COMMIT_MESSAGE:-"Build from source commit $source_sha."}
 commit_sha=$(echo "$commit_msg" | git commit-tree $tree_sha -p $ref)
 
 git update-ref $ref $commit_sha \
